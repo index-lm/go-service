@@ -1,0 +1,31 @@
+system:
+  port: 10010
+
+mysql:
+  host: '${MYSQL_HOST:58.87.111.253}'
+  port: '${MYSQL_PORT:3308}'
+  username: '${MYSQL_USER:root}'
+  password: '${MYSQL_PWD:Lejian@123}'
+  db: '${MYSQL_DB:db_hospital}'
+  conn:
+    maxidle: 10
+    maxopen: 100
+
+redis:
+  host: '${REDIS_HOST:118.89.237.99}'
+  portt: '${REDIS_PORT:6379}'
+  db: 6
+  password: '${REDIS_PWD}'
+  poolsize: 100
+  cache:
+    tokenexpired: 7200 # expired time 2*60*60
+
+log:
+  prefix: '/opt/log.txt'
+  log-file: true
+  stdout: 'DEBUG'
+  file: 'DEBUG'
+
+jwt:
+  signKey: 'index'
+  expires: 36000
