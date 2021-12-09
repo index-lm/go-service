@@ -1,4 +1,4 @@
-package logger
+package log
 
 import (
 	"os"
@@ -41,26 +41,23 @@ func NewEncoderConfig() zapcore.EncoderConfig {
 	}
 }
 
+func NewLogConfig() *lumberjack2.Logger {
+	return &lumberjack2.Logger{
+		Filename:   "log/im.log", // 日志文件的位置
+		MaxSize:    1024,         // 在进行切割之前，日志文件的最大大小（以MB为单位）
+		MaxBackups: 10,           // 保留旧文件的最大个数
+		MaxAge:     7,            // 保留旧文件的最大天数
+		Compress:   false,        // 是否压缩/归档旧文件
+	}
+}
+
 func TimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 	enc.AppendString(t.Format("2006-01-02 15:04:05.000"))
 }
 
 func Init() {
-	w := zapcore.AddSync(&lumberjack2.Logger{
-		Filename:   "log/im.log",
-		MaxSize:    1024, // megabytes
-		MaxBackups: 10,
-		MaxAge:     7, // days
-	})
-
 	var writeSyncer zapcore.WriteSyncer
-	if Target == Console {
-		writeSyncer = zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout))
-	}
-	if Target == File {
-		writeSyncer = zapcore.NewMultiWriteSyncer(w)
-	}
-
+	writeSyncer = zapcore.NewMultiWriteSyncer(zapcore.AddSync(NewLogConfig()), zapcore.AddSync(os.Stdout))
 	core := zapcore.NewCore(
 		zapcore.NewConsoleEncoder(NewEncoderConfig()),
 		writeSyncer,

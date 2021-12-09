@@ -86,7 +86,7 @@ func ParseToken(tokensString string) (claims *Claims, err error) {
 	if config.Config.MultiLoginPolicy.OnlyOneTerminalAccess {
 		//OnlyOneTerminalAccess policy need to check all terminal
 		//When only one end is allowed to log in, there is a situation that needs to be paid attention to. After PC login,
-		//mobile login should check two platform times. One of them is less than the redis storage time, which is the invalid token.
+		//mobile login should check two platform times. One of them is less than the cache storage time, which is the invalid token.
 		platform := "PC"
 		if Platform2class[claims.Platform] == "PC" {
 			platform = "Mobile"
@@ -132,7 +132,7 @@ func MakeTheTokenInvalid(currentClaims *Claims, platformClass string) (bool, err
 	if err != nil {
 		return false, err
 	}
-	//if issue time less than redis token then make this token invalid
+	//if issue time less than cache token then make this token invalid
 	if currentClaims.IssuedAt.Time.Unix() < storedRedisPlatformClaims.IssuedAt.Time.Unix() {
 		return true, TokenInvalid
 	}
