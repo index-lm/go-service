@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"gim/pkg/logger"
 	"time"
 
 	"github.com/go-redis/redis"
@@ -20,13 +19,13 @@ func NewRedisUtil(client *redis.Client) *RedisUtil {
 func (u *RedisUtil) Set(key string, value interface{}, duration time.Duration) error {
 	bytes, err := jsoniter.Marshal(value)
 	if err != nil {
-		logger.Sugar.Error(err)
+		//logger.Sugar.Error(err)
 		return err
 	}
 
 	err = u.client.Set(key, bytes, duration).Err()
 	if err != nil {
-		logger.Sugar.Error(err)
+		//logger.Sugar.Error(err)
 		return err
 	}
 	return nil
@@ -40,7 +39,7 @@ func (u *RedisUtil) Get(key string, value interface{}) error {
 	}
 	err = jsoniter.Unmarshal(bytes, value)
 	if err != nil {
-		logger.Sugar.Error(err)
+		//logger.Sugar.Error(err)
 		return err
 	}
 	return nil

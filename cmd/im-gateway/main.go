@@ -2,17 +2,30 @@ package main
 
 import (
 	_ "embed"
-	"fmt"
 	im_gateway "go-service/configs/im-gateway"
-	"gopkg.in/yaml.v3"
+	"go-service/internal/app/im-gateway/config"
+	"go-service/pkg/db"
+	"go-service/pkg/log"
+	"go-service/pkg/yaml"
 )
 
 func main() {
-	yaml1 := im_gateway.ImGatewayYaml
-	fmt.Println(yaml1)
-	m := make(map[interface{}]interface{})
-	_ = yaml.Unmarshal([]byte(yaml1), &m)
-	for k, v := range m {
-		fmt.Printf("--- k: %v -v: %v \n", k, v)
+	var myConfig *config.Server
+	yamlBytes := []byte(im_gateway.ImGatewayYaml)
+	err := yaml.YamlParse(&yamlBytes, &myConfig)
+	if err != nil {
+		log.Error("sys", err.Error())
+	}
+	log.InitLogger("/opt/go", "info", 200, 30, 90, false, "gateway")
+	// 初始化orm
+	err = db.InitGorm(myConfig.Mysql.Username, myConfig.Mysql.Password, myConfig.Mysql.Host, myConfig.Mysql.Db, myConfig.Mysql.Conn.MaxIdle, myConfig.Mysql.Conn.MaxIdle)
+	if err != nil {
+		log.Error("sys", err.Error())
+	}
+	// 初始化Redis
+	db.InitRedis(myConfig.Redis.Host, myConfig.Redis.Port, myConfig.Redis.Password, myConfig.Redis.Db)
+	err = config.InitWeb(myConfig.System.Port)
+	if err != nil {
+		log.Error("sys", err.Error())
 	}
 }

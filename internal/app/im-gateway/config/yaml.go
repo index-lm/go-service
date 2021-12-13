@@ -3,7 +3,7 @@ package config
 type Server struct {
 	System System `json:"system" yaml:"system"`
 	Mysql  Mysql  `json:"mysql" yaml:"mysql"`
-	Redis  Redis  `json:"cache" yaml:"cache"`
+	Redis  Redis  `json:"redis" yaml:"redis"`
 	Log    Log    `json:"log" yaml:"log"`
 	Jwt    Jwt    `json:"jwt" yaml:"jwt"`
 }
@@ -29,7 +29,7 @@ type Mysql struct {
 // Redis 缓存配置
 type Redis struct {
 	Host     string `json:"host" yaml:"host"`
-	Portt    string `json:"portt" yaml:"portt"`
+	Port     string `json:"port" yaml:"port"`
 	Db       int    `json:"db" yaml:"db"`
 	Password string `json:"password" yaml:"password"`
 	PoolSize int    `json:"poolSize" yaml:"poolSize"`

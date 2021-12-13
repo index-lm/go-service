@@ -2,17 +2,14 @@ package utils
 
 import (
 	"fmt"
-	"gim/pkg/logger"
 	"runtime"
-
-	"go.uber.org/zap"
 )
 
 // RecoverPanic 恢复panic
 func RecoverPanic() {
 	err := recover()
 	if err != nil {
-		logger.Logger.DPanic("panic", zap.Any("panic", err), zap.String("stack", GetStackInfo()))
+		//log.DPanic("panic", zap.Any("panic", err), zap.String("stack", GetStackInfo()))
 	}
 }
 

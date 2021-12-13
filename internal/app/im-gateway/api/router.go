@@ -1,53 +1,48 @@
 package api
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
-	"service-im/handler"
-	"service-im/utils"
+	"go-service/internal/pkg/middleware"
+	"go-service/internal/pkg/model/res"
+	"go-service/pkg/log"
 )
 
-func routerCommonInit(Router *gin.RouterGroup) {
-	AuthRouter := Router.Group("/auth")
+func InitRouter(router *gin.Engine) {
+	//全局中间件
+	//全局异常处理
+	router.Use(middleware.Recover)
+	//跨域请求放行中间件
+	router.Use(middleware.Cors())
+	//
+	//routerGroupSecurity := router.Group("/security")
+	////认证中间件
+	//routerGroupSecurity.Use(middleware.Auth)
+	routerGroupCommon := router.Group("/common")
+	//路由注册
+	routerCommonInit(routerGroupCommon)
+	//routerSecurityInit(routerGroupSecurity)
+}
+
+//
+func routerCommonInit(router *gin.RouterGroup) {
+	authRouter := router.Group("/auth")
 	{
-		AuthRouter.POST("/login", handler.Login)
-		AuthRouter.GET("/login/mobile/code", handler.GetMobileLoginCode)
-		AuthRouter.POST("/login/mobile/code", handler.MobileLoginCode)
-	}
-	AreaRouter := Router.Group("/area")
-	{
-		AreaRouter.GET("/district/list", handler.DistrictList)
-		AreaRouter.GET("/branch/list", handler.BranchList)
-		AreaRouter.POST("/branch/import", handler.BranchImport)
-		AreaRouter.GET("/branch/adminReport", handler.BranchAdminReport)
-		AreaRouter.POST("/doctor/import", handler.DoctorImport)
-		AreaRouter.POST("/test", func(context *gin.Context) {
-			//
-			err := utils.MqSend("test", "a", "hello", 0)
-			if err != nil {
-				panic(err.Error())
-			}
+		authRouter.GET("/login", func(context *gin.Context) {
+			go testLog()
+			go testLog()
+			go testLog()
+			go testLog()
+			go testLog()
+			go testLog()
+			go testLog()
+			res.OkWithData("登录成功！", context)
 		})
 	}
 }
-func routerSecurityInit(Router *gin.RouterGroup) {
-	BaseRouter := Router.Group("/auth")
-	{
-		BaseRouter.DELETE("/logout", handler.Logout)
-	}
-	OrderRouter := Router.Group("/order")
-	{
-		OrderRouter.GET("/list", handler.OrderList)
-		OrderRouter.GET("/details", handler.OrderDetails)
-		OrderRouter.POST("/modifyExt", handler.ModifyOrderExt)
-		OrderRouter.POST("/createRoom", handler.CreateRoom)
-	}
-	DoctorList := Router.Group("/doctor")
-	{
-		DoctorList.GET("/list", handler.GetDoctorList)
-		DoctorList.GET("/details", handler.OrderDetails)
-	}
-	PatientRouter := Router.Group("/patient")
-	{
-		PatientRouter.GET("/list", handler.PatientList)
+func testLog() {
+	for i := 0; i < 99999; i++ {
+		sprintf := fmt.Sprintf("12312%d", i)
+		log.Info("tttt", sprintf)
 	}
 }
