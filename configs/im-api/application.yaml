@@ -1,6 +1,6 @@
 system:
-  port: 10102
-  name: 'im-gateway'
+  port: 10101
+  name: 'im-api'
 
 mysql:
   host: '${MYSQL_HOST:mysql.db.mytijian.cn}'

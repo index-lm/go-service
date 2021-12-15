@@ -3,10 +3,10 @@ package config
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"go-service/internal/app/im-gateway/api"
+	"go-service/internal/app/im-api/api"
 )
 
-func InitWeb(port int) error {
+func InitWeb(port uint64) error {
 	address := fmt.Sprintf(":%d", port)
 	// 默认已经连接了 Logger and Recovery 中间件
 	var router = gin.New()

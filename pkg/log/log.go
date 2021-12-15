@@ -31,7 +31,7 @@ func Warn(tag string, msg string) {
 	logger.Warn(msg, zap.String("tag", tag))
 }
 
-func InitLogger(logpath string, loglevel string, maxSize int, maxBackups int, maxAge int, compress bool, serviceName string) {
+func Init(logPath string, loglevel string, maxSize int, maxBackups int, maxAge int, compress bool, serviceName string) {
 	var level zapcore.Level
 	switch loglevel {
 	case "debug":
@@ -43,10 +43,10 @@ func InitLogger(logpath string, loglevel string, maxSize int, maxBackups int, ma
 	default:
 		level = zap.InfoLevel
 	}
-	logPath := fmt.Sprintf("%s/%s.log", logpath, loglevel)
+	lp := fmt.Sprintf("%s/%s/%s.log", logPath, serviceName, loglevel)
 	// 日志分割
 	hook := lumberjack.Logger{
-		Filename:   logPath,    // 日志文件路径，默认 os.TempDir()
+		Filename:   lp,         // 日志文件路径，默认 os.TempDir()
 		MaxSize:    maxSize,    // 每个日志文件保存10M，默认 100M
 		MaxBackups: maxBackups, // 保留30个备份，默认不限
 		MaxAge:     maxAge,     // 保留7天，默认不限

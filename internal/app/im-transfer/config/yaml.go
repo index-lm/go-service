@@ -2,6 +2,7 @@ package config
 
 type Server struct {
 	System System `json:"system" yaml:"system"`
+	Mysql  Mysql  `json:"mysql" yaml:"mysql"`
 	Redis  Redis  `json:"redis" yaml:"redis"`
 	Log    Log    `json:"log" yaml:"log"`
 	Jwt    Jwt    `json:"jwt" yaml:"jwt"`
@@ -11,6 +12,19 @@ type Server struct {
 type System struct {
 	Port int    `json:"port" yaml:"port"`
 	Name string `json:"name" yaml:"name"`
+}
+
+// Mysql 数据库配置
+type Mysql struct {
+	Host     string `json:"host" yaml:"host"`
+	Port     string `json:"port" yaml:"port"`
+	Username string `json:"username" yaml:"username"`
+	Password string `json:"password" yaml:"password"`
+	Db       string `json:"db" yaml:"db"`
+	Conn     struct {
+		MaxIdle int `json:"maxIdle" yaml:"maxIdle"`
+		MaxOpen int `json:"maxOpen" yaml:"maxOpen"`
+	}
 }
 
 // Redis 缓存配置
