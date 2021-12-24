@@ -28,7 +28,7 @@ func Init(port uint64, serverName string) {
 		constant.WithCacheDir("D:/opt/gotmp/nacos/cache"),
 		constant.WithRotateTime("1h"),
 		constant.WithMaxAge(3),
-		constant.WithLogLevel("debug"),
+		constant.WithLogLevel("error"),
 	)
 
 	// create naming client
