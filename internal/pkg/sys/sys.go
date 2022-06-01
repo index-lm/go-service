@@ -28,7 +28,7 @@ func init() {
 	ServerIP = localAddr.IP.String()
 }
 
-func Init(serverPort uint64, serverName string) {
+func Initialize(serverPort uint64, serverName string) {
 	ServerName = serverName
 	ServerPort = serverPort
 }

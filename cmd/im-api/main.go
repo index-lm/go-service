@@ -23,11 +23,11 @@ func main() {
 	portStr := fmt.Sprintf("%d", myConfig.System.Port)
 	portInt, _ := strconv.ParseUint(*flag.String("port", portStr, "启动端口"), 10, 64)
 	sys.Init(portInt, myConfig.System.Name)
-	log.Init("/opt/go", "info", 200, 30, 90, false, sys.ServerName)
+	log.Initialize("/opt/go", "info", 200, 30, 90, false, sys.ServerName)
 
 	// 初始化Redis
 	db.InitRedis(myConfig.Redis.Host, myConfig.Redis.Port, myConfig.Redis.Password, myConfig.Redis.Db)
-	discovery.Init(sys.ServerPort, sys.ServerName)
+	discovery.Initialize(sys.ServerPort, sys.ServerName)
 
 	err = config.InitWeb(sys.ServerPort)
 	if err != nil {

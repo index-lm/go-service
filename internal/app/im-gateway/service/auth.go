@@ -2,11 +2,11 @@ package service
 
 import (
 	"context"
-	"go-service/pkg/pb/auth"
+	"go-service/pkg/pb/transfer"
 )
 
 type Auth struct{}
 
-func (a Auth) PasswordLogin(ctx context.Context, req auth.LoginReq) (res *auth.LoginRes, err error) {
-	return &auth.LoginRes{Code: 0, Success: req.Password}, nil
+func (a Auth) PasswordLogin(ctx context.Context, req *transfer.LoginReq) (res *transfer.LoginRes, err error) {
+	return &transfer.LoginRes{Code: 0, Success: req.Password}, nil
 }

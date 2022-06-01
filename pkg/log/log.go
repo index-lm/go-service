@@ -9,6 +9,16 @@ import (
 	"time"
 )
 
+type InitConfig struct {
+	logPath     string
+	loglevel    string
+	maxSize     int
+	maxBackups  int
+	maxAge      int
+	compress    bool
+	serviceName string
+}
+
 func TimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 	enc.AppendString(t.Format("2006-01-02 15:04:05.000"))
 }
@@ -31,9 +41,9 @@ func Warn(tag string, msg string) {
 	logger.Warn(msg, zap.String("tag", tag))
 }
 
-func Init(logPath string, loglevel string, maxSize int, maxBackups int, maxAge int, compress bool, serviceName string) {
+func Initialize(initConfig *InitConfig) {
 	var level zapcore.Level
-	switch loglevel {
+	switch initConfig.loglevel {
 	case "debug":
 		level = zap.DebugLevel
 	case "info":
@@ -43,14 +53,14 @@ func Init(logPath string, loglevel string, maxSize int, maxBackups int, maxAge i
 	default:
 		level = zap.InfoLevel
 	}
-	lp := fmt.Sprintf("%s/%s/%s.log", logPath, serviceName, loglevel)
+	lp := fmt.Sprintf("%s/%s/%s.log", initConfig.logPath, initConfig.serviceName, initConfig.loglevel)
 	// 日志分割
 	hook := lumberjack.Logger{
-		Filename:   lp,         // 日志文件路径，默认 os.TempDir()
-		MaxSize:    maxSize,    // 每个日志文件保存10M，默认 100M
-		MaxBackups: maxBackups, // 保留30个备份，默认不限
-		MaxAge:     maxAge,     // 保留7天，默认不限
-		Compress:   compress,   // 是否压缩，默认不压缩
+		Filename:   lp,                    // 日志文件路径，默认 os.TempDir()
+		MaxSize:    initConfig.maxSize,    // 每个日志文件保存10M，默认 100M
+		MaxBackups: initConfig.maxBackups, // 保留30个备份，默认不限
+		MaxAge:     initConfig.maxAge,     // 保留7天，默认不限
+		Compress:   initConfig.compress,   // 是否压缩，默认不压缩
 	}
 	//write := zapcore.AddSync(&hook)
 	// 设置日志级别
@@ -88,7 +98,7 @@ func Init(logPath string, loglevel string, maxSize int, maxBackups int, maxAge i
 	// 开启文件及行号
 	development := zap.Development()
 	// 设置初始化字段,如：添加一个服务器名称
-	filed := zap.Fields(zap.String("service", serviceName))
+	filed := zap.Fields(zap.String("service", initConfig.serviceName))
 	// 构造日志
 	logger = zap.New(core, caller, development, filed)
 }

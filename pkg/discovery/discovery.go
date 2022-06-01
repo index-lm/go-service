@@ -13,19 +13,26 @@ import (
 
 var ServerCenter *naming_client.INamingClient
 
-func Init(port uint64, serverName string) {
+type InitConfig struct {
+	ipAddr      string
+	port        uint64
+	namespaceId string
+	serverName  string
+}
+
+func Initialize(ipAddr string, port uint64, namespaceId string, serverName string) {
 	//create ServerConfig
 	sc := []constant.ServerConfig{
-		*constant.NewServerConfig("127.0.0.1", 8848, constant.WithContextPath("/nacos")),
+		*constant.NewServerConfig(ipAddr, port, constant.WithContextPath("/nacos")),
 	}
 
 	//create ClientConfig
 	cc := *constant.NewClientConfig(
-		constant.WithNamespaceId("lecare-develop"),
+		constant.WithNamespaceId(namespaceId),
 		constant.WithTimeoutMs(5000),
 		constant.WithNotLoadCacheAtStart(true),
-		constant.WithLogDir("D:/opt/go/nacos/log"),
-		constant.WithCacheDir("D:/opt/gotmp/nacos/cache"),
+		constant.WithLogDir("C:/namespace/logs/go/nacos/log"),
+		constant.WithCacheDir("C:/namespace/logs/go/nacos/cache"),
 		constant.WithRotateTime("1h"),
 		constant.WithMaxAge(3),
 		constant.WithLogLevel("error"),
@@ -50,7 +57,7 @@ func Init(port uint64, serverName string) {
 		Port:        port,
 		ServiceName: serverName,
 		//GroupName:   "DEFAULT_GROUP",
-		ClusterName: "lecare-develop",
+		ClusterName: "develop",
 		Weight:      10,
 		Enable:      true,
 		Healthy:     true,

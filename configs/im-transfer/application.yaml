@@ -3,11 +3,11 @@ system:
   name: 'im-transfer'
 
 mysql:
-  host: '${MYSQL_HOST:mysql.db.mytijian.cn}'
+  host: '${MYSQL_HOST:39.102.79.29}'
   port: '${MYSQL_PORT:3306}'
-  username: '${MYSQL_USER:mytijian}'
-  password: '${MYSQL_PWD:mytijian}'
-  db: '${MYSQL_DB:db_hospital}'
+  username: '${MYSQL_USER:root}'
+  password: '${MYSQL_PWD:indexlm}'
+  db: '${MYSQL_DB:db_im}'
   conn:
     maxidle: 10
     maxopen: 100
@@ -22,7 +22,7 @@ redis:
     tokenexpired: 7200 # expired time 2*60*60
 
 log:
-  prefix: '/opt'
+  logPath: '/opt'
   log-file: true
   stdout: 'DEBUG'
   file: 'DEBUG'
@@ -30,3 +30,7 @@ log:
 jwt:
   signKey: 'index'
   expires: 36000
+nacos:
+  ipAddr: "127.0.0.1"
+  port: 8848
+  namespaceId: "develop"

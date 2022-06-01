@@ -18,7 +18,7 @@ func main() {
 	if err != nil {
 		log.Error("sys", err.Error())
 	}
-	log.Init("/opt/go", "info", 200, 30, 90, false, "im-gateway")
-	//discovery.Init()
+	log.Initialize("/opt/go", "info", 200, 30, 90, false, "im-gateway")
+	//discovery.Initialize()
 	wg.Wait()
 }
