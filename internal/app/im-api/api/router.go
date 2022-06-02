@@ -37,7 +37,7 @@ func routerCommonInit(router *gin.RouterGroup) {
 			instance := discovery.SelectOneHealthyInstance(*discovery.ServerCenter, vo.SelectOneHealthInstanceParam{
 				ServiceName: "im-transfer",
 				GroupName:   "DEFAULT_GROUP",
-				Clusters:    []string{"lecare-develop"},
+				Clusters:    []string{"develop"},
 			})
 			address := fmt.Sprintf("%s:%d", instance.Ip, instance.Port)
 			dial, err := grpc.Dial(address, grpc.WithInsecure())

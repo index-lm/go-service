@@ -20,7 +20,7 @@ type InitConfig struct {
 	serverName  string
 }
 
-func Initialize(ipAddr string, port uint64, namespaceId string, serverName string, logPath string, cachePath string) {
+func Initialize(ipAddr string, port uint64, namespaceId string, serverName string,logPath string, cachePath string) {
 	//create ServerConfig
 	sc := []constant.ServerConfig{
 		*constant.NewServerConfig(ipAddr, port, constant.WithContextPath("/nacos")),
@@ -54,7 +54,7 @@ func Initialize(ipAddr string, port uint64, namespaceId string, serverName strin
 	//ClusterName=DEFAULT,GroupName=DEFAULT_GROUP
 	ExampleServiceClient_RegisterServiceInstance(client, vo.RegisterInstanceParam{
 		Ip:          utils.ServerIP,
-		Port:        port,
+		Port:        utils.ServerPort,
 		ServiceName: serverName,
 		//GroupName:   "DEFAULT_GROUP",
 		ClusterName: namespaceId,
@@ -236,7 +236,7 @@ func ExampleServiceClient_RegisterServiceInstance(client naming_client.INamingCl
 	if err != nil {
 		log.Info("sys", err.Error())
 	}
-	fmt.Printf("RegisterServiceInstance,param:%+v,result:%+v \n\n", param, success)
+	log.Info("nacos", fmt.Sprintf("RegisterServiceInstance,param:%+v,result:%+v", param, success))
 }
 
 func ExampleServiceClient_DeRegisterServiceInstance(client naming_client.INamingClient, param vo.DeregisterInstanceParam) {

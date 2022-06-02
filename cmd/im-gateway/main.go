@@ -20,10 +20,7 @@ func main() {
 	}()
 	yamlBytes := []byte(im_gateway.YamlStr)
 	//解析yaml
-	err := yaml.YamlParse(&yamlBytes, &im_gateway.AppConfig)
-	if err != nil {
-		panic(err.Error())
-	}
+	yaml.YamlParse(&yamlBytes, &im_gateway.AppConfig)
 	// 先从yaml中获取端口
 	portStr := fmt.Sprintf("%d", im_gateway.AppConfig.System.Port)
 	// 再从启动命令中获取端口参数

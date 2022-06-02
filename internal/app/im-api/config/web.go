@@ -6,7 +6,7 @@ import (
 	"go-service/internal/app/im-api/api"
 )
 
-func InitWeb(port uint64) error {
+func InitWeb(port uint64)  {
 	address := fmt.Sprintf(":%d", port)
 	// 默认已经连接了 Logger and Recovery 中间件
 	var router = gin.New()
@@ -14,7 +14,6 @@ func InitWeb(port uint64) error {
 	api.InitRouter(router)
 	err := router.Run(address)
 	if err != nil {
-		return err
+		panic(err)
 	}
-	return nil
 }

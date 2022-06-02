@@ -19,10 +19,7 @@ func main() {
 		fmt.Println(i)
 	}()
 	yamlBytes := []byte(im_api.YamlStr)
-	err := yaml.YamlParse(&yamlBytes, &im_api.AppConfig)
-	if err != nil {
-		panic(err.Error())
-	}
+	yaml.YamlParse(&yamlBytes, &im_api.AppConfig)
 	// 先从yaml中获取端口
 	portStr := fmt.Sprintf("%d", im_api.AppConfig.System.Port)
 	// 再从启动命令中获取端口参数
@@ -43,10 +40,7 @@ func main() {
 		im_api.AppConfig.Log.File,
 		im_api.AppConfig.Log.File)
 
-	err = config.InitWeb(sys.ServerPort)
-	if err != nil {
-		log.Error("sys", err.Error())
-	}
+	config.InitWeb(sys.ServerPort)
 }
 
 //go func() {

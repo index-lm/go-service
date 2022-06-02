@@ -11,7 +11,7 @@ import (
 var Gorm *gorm.DB
 
 // InitGorm 初始化mysqlOrm
-func InitGorm(username string, password string, host string, dbName string, maxIdle int, maxOpen int, initFunc func(db *gorm.DB)) error {
+func InitGorm(username string, password string, host string, dbName string, maxIdle int, maxOpen int, initFunc func(db *gorm.DB)) {
 	connInfo := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		username,
 		password,
@@ -29,11 +29,11 @@ func InitGorm(username string, password string, host string, dbName string, maxI
 		DisableForeignKeyConstraintWhenMigrating: true,
 	})
 	if err != nil {
-		return err
+		panic(err)
 	}
 	sqlDB, err := db.DB()
 	if err != nil {
-		return err
+		panic(err)
 	}
 	// 设置空闲连接池中连接的最大数量
 	sqlDB.SetMaxIdleConns(maxIdle)
@@ -43,7 +43,6 @@ func InitGorm(username string, password string, host string, dbName string, maxI
 	sqlDB.SetConnMaxLifetime(time.Hour)
 	initFunc(db)
 	Gorm = db
-	return nil
 }
 
 type BaseModel struct {

@@ -25,10 +25,7 @@ func main() {
 	}()
 	yamlBytes := []byte(im_transfer.YamlStr)
 	//解析yaml
-	err := yaml.YamlParse(&yamlBytes, &im_transfer.AppConfig)
-	if err != nil {
-		panic(err.Error())
-	}
+	yaml.YamlParse(&yamlBytes, &im_transfer.AppConfig)
 	// 先从yaml中获取端口
 	portStr := fmt.Sprintf("%d", im_transfer.AppConfig.System.Port)
 	// 再从启动命令中获取端口参数
@@ -40,16 +37,13 @@ func main() {
 		log.WithServiceName(sys.ServerName),
 		log.WithLogLevel(im_transfer.AppConfig.Log.Level))
 	// 初始化orm
-	err = db.InitGorm(im_transfer.AppConfig.Mysql.Username,
+	db.InitGorm(im_transfer.AppConfig.Mysql.Username,
 		im_transfer.AppConfig.Mysql.Password,
 		im_transfer.AppConfig.Mysql.Host,
 		im_transfer.AppConfig.Mysql.Db,
 		im_transfer.AppConfig.Mysql.Conn.MaxIdle,
 		im_transfer.AppConfig.Mysql.Conn.MaxIdle,
 		model.InitDb)
-	if err != nil {
-		log.Error("sys", err.Error())
-	}
 	// 初始化Redis
 	db.InitRedis(im_transfer.AppConfig.Redis.Host,
 		im_transfer.AppConfig.Redis.Port,
@@ -71,6 +65,6 @@ func main() {
 	//reflection.Register(server)
 	err = server.Serve(listen)
 	if err != nil {
-		log.Error("服务监听端口失败", err.Error())
+		log.Error("服务监听失败", err.Error())
 	}
 }
