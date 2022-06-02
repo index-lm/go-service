@@ -2,23 +2,34 @@ package main
 
 import (
 	_ "embed"
+	"flag"
+	"fmt"
 	im_gateway "go-service/configs/im-gateway"
-	"go-service/internal/app/im-gateway/config"
-	"go-service/pkg/log"
+	"go-service/internal/pkg/sys"
 	"go-service/pkg/yaml"
+	"strconv"
 	"sync"
 )
 
 func main() {
 	var wg sync.WaitGroup
 	wg.Add(1)
-	var myConfig *config.Server
-	yamlBytes := []byte(im_gateway.ImGatewayYaml)
-	err := yaml.YamlParse(&yamlBytes, &myConfig)
+	defer func() {
+		i := recover()
+		fmt.Println(i)
+	}()
+	yamlBytes := []byte(im_gateway.YamlStr)
+	//解析yaml
+	err := yaml.YamlParse(&yamlBytes, &im_gateway.AppConfig)
 	if err != nil {
-		log.Error("sys", err.Error())
+		panic(err.Error())
 	}
-	log.Initialize("/opt/go", "info", 200, 30, 90, false, "im-gateway")
+	// 先从yaml中获取端口
+	portStr := fmt.Sprintf("%d", im_gateway.AppConfig.System.Port)
+	// 再从启动命令中获取端口参数
+	portInt, _ := strconv.ParseUint(*flag.String("port", portStr, "启动端口"), 10, 64)
+	// 初始化系统公共配置
+	sys.Initialize(portInt, im_gateway.AppConfig.System.Name)
 	//discovery.Initialize()
 	wg.Wait()
 }

@@ -20,7 +20,7 @@ type InitConfig struct {
 	serverName  string
 }
 
-func Initialize(ipAddr string, port uint64, namespaceId string, serverName string) {
+func Initialize(ipAddr string, port uint64, namespaceId string, serverName string, logPath string, cachePath string) {
 	//create ServerConfig
 	sc := []constant.ServerConfig{
 		*constant.NewServerConfig(ipAddr, port, constant.WithContextPath("/nacos")),
@@ -31,8 +31,8 @@ func Initialize(ipAddr string, port uint64, namespaceId string, serverName strin
 		constant.WithNamespaceId(namespaceId),
 		constant.WithTimeoutMs(5000),
 		constant.WithNotLoadCacheAtStart(true),
-		constant.WithLogDir("C:/namespace/logs/go/nacos/log"),
-		constant.WithCacheDir("C:/namespace/logs/go/nacos/cache"),
+		constant.WithLogDir(logPath),
+		constant.WithCacheDir(cachePath),
 		constant.WithRotateTime("1h"),
 		constant.WithMaxAge(3),
 		constant.WithLogLevel("error"),
@@ -57,7 +57,7 @@ func Initialize(ipAddr string, port uint64, namespaceId string, serverName strin
 		Port:        port,
 		ServiceName: serverName,
 		//GroupName:   "DEFAULT_GROUP",
-		ClusterName: "develop",
+		ClusterName: namespaceId,
 		Weight:      10,
 		Enable:      true,
 		Healthy:     true,

@@ -2,16 +2,6 @@ system:
   port: 10101
   name: 'im-api'
 
-mysql:
-  host: '${MYSQL_HOST:mysql.db.mytijian.cn}'
-  port: '${MYSQL_PORT:3306}'
-  username: '${MYSQL_USER:mytijian}'
-  password: '${MYSQL_PWD:mytijian}'
-  db: '${MYSQL_DB:db_hospital}'
-  conn:
-    maxidle: 10
-    maxopen: 100
-
 redis:
   host: '${REDIS_HOST:redis.db.mytijian.cn}'
   port: '${REDIS_PORT:6379}'
@@ -22,11 +12,14 @@ redis:
     tokenexpired: 7200 # expired time 2*60*60
 
 log:
-  prefix: '/opt'
-  log-file: true
-  stdout: 'DEBUG'
-  file: 'DEBUG'
+  level: 'info'
+  file: 'C:/namespace/logs'
 
 jwt:
   signKey: 'index'
   expires: 36000
+
+nacos:
+  ipAddr: "127.0.0.1"
+  port: 8848
+  namespaceId: "develop"

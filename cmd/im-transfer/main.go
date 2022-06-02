@@ -19,12 +19,15 @@ import (
 )
 
 func main() {
-	yamlBytes := []byte(im_transfer.ImTransferYaml)
+	defer func() {
+		i := recover()
+		fmt.Println(i)
+	}()
+	yamlBytes := []byte(im_transfer.YamlStr)
 	//解析yaml
-	err := yaml.YamlParse(&yamlBytes, im_transfer.AppConfig)
+	err := yaml.YamlParse(&yamlBytes, &im_transfer.AppConfig)
 	if err != nil {
-		log.Error("sys", err.Error())
-		return
+		panic(err.Error())
 	}
 	// 先从yaml中获取端口
 	portStr := fmt.Sprintf("%d", im_transfer.AppConfig.System.Port)
@@ -33,16 +36,32 @@ func main() {
 	// 初始化系统公共配置
 	sys.Initialize(portInt, im_transfer.AppConfig.System.Name)
 	// 初始化日志框架
-	log.Initialize("/opt/go", "info", 200, 30, 90, false, sys.ServerName)
+	log.ConfigInit(log.WithLogPath(im_transfer.AppConfig.Log.File),
+		log.WithServiceName(sys.ServerName),
+		log.WithLogLevel(im_transfer.AppConfig.Log.Level))
 	// 初始化orm
-	err = db.InitGorm(im_transfer.AppConfig.Mysql.Username, im_transfer.AppConfig.Mysql.Password, im_transfer.AppConfig.Mysql.Host, im_transfer.AppConfig.Mysql.Db, im_transfer.AppConfig.Mysql.Conn.MaxIdle, im_transfer.AppConfig.Mysql.Conn.MaxIdle, model.InitDb)
+	err = db.InitGorm(im_transfer.AppConfig.Mysql.Username,
+		im_transfer.AppConfig.Mysql.Password,
+		im_transfer.AppConfig.Mysql.Host,
+		im_transfer.AppConfig.Mysql.Db,
+		im_transfer.AppConfig.Mysql.Conn.MaxIdle,
+		im_transfer.AppConfig.Mysql.Conn.MaxIdle,
+		model.InitDb)
 	if err != nil {
 		log.Error("sys", err.Error())
 	}
 	// 初始化Redis
-	db.InitRedis(im_transfer.AppConfig.Redis.Host, im_transfer.AppConfig.Redis.Port, im_transfer.AppConfig.Redis.Password, im_transfer.AppConfig.Redis.Db)
-
-	discovery.Initialize(sys.ServerPort, sys.ServerName)
+	db.InitRedis(im_transfer.AppConfig.Redis.Host,
+		im_transfer.AppConfig.Redis.Port,
+		im_transfer.AppConfig.Redis.Password,
+		im_transfer.AppConfig.Redis.Db)
+	// 初始化注册中心配置 -注册生产者
+	discovery.Initialize(im_transfer.AppConfig.Nacos.IpAddr,
+		im_transfer.AppConfig.Nacos.Port,
+		im_transfer.AppConfig.Nacos.NamespaceId,
+		sys.ServerName,
+		im_transfer.AppConfig.Log.File,
+		im_transfer.AppConfig.Log.File)
 	server := grpc.NewServer()
 	transfer.RegisterTransferServer(server, new(service.Transfer))
 	listen, err := net.Listen("tcp", fmt.Sprintf(":%d", sys.ServerPort))

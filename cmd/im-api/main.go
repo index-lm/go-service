@@ -14,20 +14,34 @@ import (
 )
 
 func main() {
-	var myConfig *config.Server
-	yamlBytes := []byte(im_api.ImApiYaml)
-	err := yaml.YamlParse(&yamlBytes, &myConfig)
+	defer func() {
+		i := recover()
+		fmt.Println(i)
+	}()
+	yamlBytes := []byte(im_api.YamlStr)
+	err := yaml.YamlParse(&yamlBytes, &im_api.AppConfig)
 	if err != nil {
-		log.Error("sys", err.Error())
+		panic(err.Error())
 	}
-	portStr := fmt.Sprintf("%d", myConfig.System.Port)
+	// 先从yaml中获取端口
+	portStr := fmt.Sprintf("%d", im_api.AppConfig.System.Port)
+	// 再从启动命令中获取端口参数
 	portInt, _ := strconv.ParseUint(*flag.String("port", portStr, "启动端口"), 10, 64)
-	sys.Init(portInt, myConfig.System.Name)
-	log.Initialize("/opt/go", "info", 200, 30, 90, false, sys.ServerName)
-
+	// 初始化系统公共配置
+	sys.Initialize(portInt, im_api.AppConfig.System.Name)
+	// 初始化日志框架
+	log.ConfigInit(log.WithLogPath(im_api.AppConfig.Log.File),
+		log.WithServiceName(sys.ServerName),
+		log.WithLogLevel(im_api.AppConfig.Log.Level))
 	// 初始化Redis
-	db.InitRedis(myConfig.Redis.Host, myConfig.Redis.Port, myConfig.Redis.Password, myConfig.Redis.Db)
-	discovery.Initialize(sys.ServerPort, sys.ServerName)
+	db.InitRedis(im_api.AppConfig.Redis.Host, im_api.AppConfig.Redis.Port, im_api.AppConfig.Redis.Password, im_api.AppConfig.Redis.Db)
+	// 初始化注册中心配置 -注册生产者
+	discovery.Initialize(im_api.AppConfig.Nacos.IpAddr,
+		im_api.AppConfig.Nacos.Port,
+		im_api.AppConfig.Nacos.NamespaceId,
+		sys.ServerName,
+		im_api.AppConfig.Log.File,
+		im_api.AppConfig.Log.File)
 
 	err = config.InitWeb(sys.ServerPort)
 	if err != nil {

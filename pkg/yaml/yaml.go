@@ -1,7 +1,7 @@
 package yaml
 
 import (
-	"go-service/pkg/log"
+	"fmt"
 	"gopkg.in/yaml.v3"
 	"os"
 	"reflect"
@@ -76,7 +76,7 @@ func configInit(t reflect.Type, v reflect.Value) error {
 	} else if t.Kind() == reflect.Int {
 
 	} else {
-		log.Info("sys", "解析配置文件，未知类型参数")
+		fmt.Println("解析配置文件，未知类型参数")
 	}
 	return err
 }

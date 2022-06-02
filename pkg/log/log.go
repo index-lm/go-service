@@ -41,7 +41,30 @@ func Warn(tag string, msg string) {
 	logger.Warn(msg, zap.String("tag", tag))
 }
 
-func Initialize(initConfig *InitConfig) {
+// "info", 200, 30, 90, false, sys.ServerName
+func ConfigInit(co ...ConfigOption) {
+	ic := &InitConfig{
+		logPath:     "",
+		loglevel:    "info",
+		maxSize:     200,
+		maxBackups:  30,
+		maxAge:      90,
+		compress:    false,
+		serviceName: "",
+	}
+	for _, ele := range co {
+		ele(ic)
+	}
+	initialize(ic)
+}
+
+func initialize(initConfig *InitConfig) {
+	if initConfig.logPath == "" {
+		panic("日志路径不能为空")
+	}
+	if initConfig.serviceName == "" {
+		panic("服务名称不能为空")
+	}
 	var level zapcore.Level
 	switch initConfig.loglevel {
 	case "debug":
@@ -101,4 +124,48 @@ func Initialize(initConfig *InitConfig) {
 	filed := zap.Fields(zap.String("service", initConfig.serviceName))
 	// 构造日志
 	logger = zap.New(core, caller, development, filed)
+}
+
+type ConfigOption func(*InitConfig)
+
+// 设置日志目录
+func WithLogPath(lp string) ConfigOption {
+	return func(config *InitConfig) {
+		config.logPath = lp
+	}
+}
+
+// 设置日志级别
+func WithLogLevel(ll string) ConfigOption {
+	return func(config *InitConfig) {
+		config.loglevel = ll
+	}
+}
+
+// 设置每个日志保存的最大大小
+func WithMaxSize(ms int) ConfigOption {
+	return func(config *InitConfig) {
+		config.maxSize = ms
+	}
+}
+
+// 设置保存天数
+func WithMaxAge(ma int) ConfigOption {
+	return func(config *InitConfig) {
+		config.maxAge = ma
+	}
+}
+
+// 设置是否压缩
+func WithCompress(c bool) ConfigOption {
+	return func(config *InitConfig) {
+		config.compress = c
+	}
+}
+
+// 设置服务名称
+func WithServiceName(sn string) ConfigOption {
+	return func(config *InitConfig) {
+		config.serviceName = sn
+	}
 }

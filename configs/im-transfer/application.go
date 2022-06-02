@@ -3,7 +3,7 @@ package im_transfer
 import _ "embed"
 
 //go:embed application.yaml
-var ImTransferYaml string
+var YamlStr string
 
 var AppConfig *Server
 
@@ -12,7 +12,7 @@ type Server struct {
 	Mysql  Mysql  `json:"mysql" yaml:"mysql"`
 	Redis  Redis  `json:"redis" yaml:"redis"`
 	Log    Log    `json:"log" yaml:"log"`
-	Jwt    Jwt    `json:"jwt" yaml:"jwt"`
+	Nacos  Nacos  `json:"nacos" yaml:"nacos"`
 }
 
 // System 系统配置
@@ -48,14 +48,13 @@ type Redis struct {
 
 // Log 日志配置
 type Log struct {
-	Prefix  string `json:"prefix" yaml:"prefix"`
-	LogFile bool   `json:"log_file" yaml:"log-file"`
-	Stdout  string `json:"stdout" yaml:"stdout"`
-	File    string `json:"file" yaml:"file"`
+	File  string `json:"file" yaml:"file"`
+	Level string `json:"level" yaml:"level"`
 }
 
-// Jwt 签名结构
-type Jwt struct {
-	SignKey string `json:"signKey" yaml:"signKey"`
-	Expires int64  `json:"expires" yaml:"expires"`
+// nacos注册中心配置
+type Nacos struct {
+	IpAddr      string `josn:"ipAddr" yaml:"ipAddr"`
+	Port        uint64 `josn:"port" yaml:"port"`
+	NamespaceId string `josn:"namespaceId" yaml:"namespaceId"`
 }
