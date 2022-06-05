@@ -4,11 +4,12 @@ import (
 	"flag"
 	"fmt"
 	im_api "go-service/configs/im-api"
-	"go-service/internal/app/im-api/config"
+	"go-service/internal/app/im-api/api"
 	"go-service/internal/pkg/sys"
 	"go-service/pkg/db"
 	"go-service/pkg/discovery"
 	"go-service/pkg/log"
+	"go-service/pkg/web"
 	"go-service/pkg/yaml"
 	"strconv"
 )
@@ -39,8 +40,8 @@ func main() {
 		sys.ServerName,
 		im_api.AppConfig.Log.File,
 		im_api.AppConfig.Log.File)
-
-	config.InitWeb(sys.ServerPort)
+	// 初始化gin web容器
+	web.InitGin(sys.ServerPort,api.InitRouter)
 }
 
 //go func() {

@@ -11,6 +11,12 @@ import (
 	"go-service/pkg/log"
 )
 
+const (
+	ServiceImTransfer = "im-transfer"
+	ServiceImApi      = "im-api"
+	ServiceImGateway  = "im-gateway"
+)
+
 var ServerCenter *naming_client.INamingClient
 
 type InitConfig struct {
@@ -20,7 +26,7 @@ type InitConfig struct {
 	serverName  string
 }
 
-func Initialize(ipAddr string, port uint64, namespaceId string, serverName string,logPath string, cachePath string) {
+func Initialize(ipAddr string, port uint64, namespaceId string, serverName string, logPath string, cachePath string) {
 	//create ServerConfig
 	sc := []constant.ServerConfig{
 		*constant.NewServerConfig(ipAddr, port, constant.WithContextPath("/nacos")),

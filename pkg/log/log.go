@@ -96,14 +96,14 @@ func initialize(initConfig *InitConfig) {
 		TimeKey:        "time",
 		LevelKey:       "level",
 		NameKey:        "logger",
-		CallerKey:      "linenum",
+		//CallerKey:      "linenum",  //显示源码行号
 		MessageKey:     "msg",
 		StacktraceKey:  "stacktrace",
 		LineEnding:     zapcore.DefaultLineEnding,
 		EncodeLevel:    zapcore.LowercaseLevelEncoder,  // 小写编码器
 		EncodeTime:     TimeEncoder,                    // ISO8601 UTC 时间格式
 		EncodeDuration: zapcore.SecondsDurationEncoder, //
-		EncodeCaller:   zapcore.ShortCallerEncoder,     // 全路径编码器 zapcore.FullCallerEncoder
+		//EncodeCaller:   zapcore.ShortCallerEncoder,     // 全路径编码器 zapcore.FullCallerEncoder
 		EncodeName:     zapcore.FullNameEncoder,
 	}
 	// 设置日志级别
@@ -117,13 +117,14 @@ func initialize(initConfig *InitConfig) {
 		level,
 	)
 	// 开启开发模式，堆栈跟踪
-	caller := zap.AddCaller()
+	//caller := zap.AddCaller()
 	// 开启文件及行号
-	development := zap.Development()
+	//development := zap.Development()
 	// 设置初始化字段,如：添加一个服务器名称
 	filed := zap.Fields(zap.String("service", initConfig.serviceName))
 	// 构造日志
-	logger = zap.New(core, caller, development, filed)
+	//logger = zap.New(core, caller, development, filed)
+	logger = zap.New(core, filed)
 }
 
 type ConfigOption func(*InitConfig)

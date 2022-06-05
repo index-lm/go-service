@@ -1,6 +1,7 @@
 package sys
 
 import (
+	"context"
 	"net"
 )
 
@@ -31,4 +32,8 @@ func init() {
 func Initialize(serverPort uint64, serverName string) {
 	ServerName = serverName
 	ServerPort = serverPort
+}
+
+func GetCxt() context.Context {
+	return context.Background()
 }

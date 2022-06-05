@@ -1,0 +1,15 @@
+syntax = "proto3";
+package transfer;
+
+option go_package="../transfer";
+
+service Account{
+  rpc SaveAccount(SaveAccountReq) returns(SaveAccountRes){}
+}
+
+message SaveAccountReq{
+
+}
+message SaveAccountRes{
+
+}
