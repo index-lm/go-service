@@ -1,0 +1,18 @@
+syntax = "proto3";
+package user;
+
+option go_package = "../user";
+
+service User{
+  rpc SaveUser(SaveUserReq) returns(SaveUserRes){}
+}
+
+message SaveUserReq{
+  string nickName = 1;
+  uint64 clientId = 2;
+  uint64 sex = 3;
+
+}
+message SaveUserRes{
+
+}
